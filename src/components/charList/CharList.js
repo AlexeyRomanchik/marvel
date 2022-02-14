@@ -1,52 +1,53 @@
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
+import { Component } from 'react';
+import MarvelService from '../../services/MarvelService';
+import Spinner from '../spinner/Spinner'
 
-const CharList = () => {
-    return (
-        <div className="char__list">
-            <ul className="char__grid">
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
+class CharList extends Component {
+
+    state = {
+        characters: []
+    }
+
+    componentDidMount() {
+        this.updateCharacters();
+    }
+
+    marvelService = new MarvelService();
+
+    updateCharacters = () => {
+        this.marvelService.getAllCharacters()
+            .then(characters => this.setState({ characters, loading: false }));
+    }
+
+
+    render() {
+        const { characters, loading, error } = this.state;
+
+        const listCharacters = characters.map(character => {
+            const imageStyle = character.thunbnail.indexOf("image_not_available.jpg") > -1 ?
+                { objectFit: "fill" } : null;
+
+            return (
+                <li className="char__item" key={character.id}>
+                    <img src={character.thunbnail} alt={character.name}
+                        style={imageStyle} />
+                    <div className="char__name">character.name</div>
                 </li>
-                <li className="char__item char__item_selected">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-            </ul>
-            <button className="button button__main button__long">
-                <div className="inner">load more</div>
-            </button>
-        </div>
-    )
+            );
+        });
+
+        return (
+            <div className="char__list">
+                <ul className="char__grid">
+                    {listCharacters}
+                </ul>
+                <button className="button button__main button__long">
+                    <div className="inner">load more</div>
+                </button>
+            </div>
+        )
+    }
 }
 
 export default CharList;

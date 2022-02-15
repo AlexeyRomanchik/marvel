@@ -1,10 +1,11 @@
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
 import Skeleton from '../skeleton/Skeleton';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
+import PropTypes from 'prop-types';
+
 
 class CharInfo extends Component {
 
@@ -115,6 +116,10 @@ const CharInfoView = ({ character }) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    id: PropTypes.number
 }
 
 export default CharInfo;

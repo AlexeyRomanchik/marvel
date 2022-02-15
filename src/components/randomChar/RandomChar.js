@@ -6,7 +6,8 @@ import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 class RandomChar extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props);
         this.updateChar();
     }
 
@@ -19,7 +20,7 @@ class RandomChar extends Component {
     marvelService = new MarvelService();
 
     onCharacterLoaded = (character) => {
-        this.setState({ character, loading: false, error: false });
+        this.setState({ character, loading: false });
     }
 
     onError = () => {
@@ -75,14 +76,10 @@ class RandomChar extends Component {
 }
 
 const RandomCharView = ({ character }) => {
-    const { name, description, thunbnail, homepage, wiki } = character;
-
-    const imageStyle = thunbnail.indexOf("image_not_available.jpg") > -1 ?
-        { objectFit: "fill" } : null;
-
+    const { name, description, thunbnail, homepage, wiki } = character
     return (
         <div className="randomchar__block">
-            <img src={thunbnail} alt="Random character" className="randomchar__img" style={imageStyle} />
+            <img src={thunbnail} alt="Random character" className="randomchar__img" />
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">

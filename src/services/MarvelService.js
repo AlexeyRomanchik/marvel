@@ -24,6 +24,8 @@ class MarvelService {
     }
 
     _transformCharacter = (character) => {
+        const topComics = character.comics.items.slice(0, 10);
+
         return {
             id: character.id,
             name: character.name,
@@ -31,7 +33,8 @@ class MarvelService {
                 'There is no description for this character',
             thunbnail: `${character.thumbnail.path}.${character.thumbnail.extension}`,
             homepage: character.urls[0].url,
-            wiki: character.urls[1].url
+            wiki: character.urls[1].url,
+            comics: topComics
         };
     }
 }

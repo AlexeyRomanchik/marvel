@@ -76,10 +76,14 @@ class RandomChar extends Component {
 }
 
 const RandomCharView = ({ character }) => {
-    const { name, description, thunbnail, homepage, wiki } = character
+    const { name, description, thunbnail, homepage, wiki } = character;
+
+    const imageStyle = character.thunbnail.indexOf("image_not_available.jpg") > -1 ?
+        { objectFit: "fill" } : null;
+
     return (
         <div className="randomchar__block">
-            <img src={thunbnail} alt="Random character" className="randomchar__img" />
+            <img src={thunbnail} alt="Random character" style={imageStyle} className="randomchar__img" />
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">

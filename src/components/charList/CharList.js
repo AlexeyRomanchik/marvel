@@ -22,6 +22,18 @@ class CharList extends Component {
 
     componentDidMount() {
         this.updateCharacters();
+        window.addEventListener('scroll', this.onScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScroll);
+    }
+
+    onScroll = () => {
+        if (window.pageYOffset + document.documentElement.clientHeight >=
+            document.documentElement.scrollHeight) {
+            this.updateCharacters(this.state.offset);
+        }
     }
 
     onItemFocus = (id) => {
@@ -35,6 +47,7 @@ class CharList extends Component {
     }
 
     updateCharacters = (offset) => {
+        console.log("update");
         this.onItemsLoading();
         this.marvelService.getAllCharacters(offset)
             .then(this.onCharactersLoaded)

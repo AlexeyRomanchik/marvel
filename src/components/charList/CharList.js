@@ -16,10 +16,34 @@ class CharList extends Component {
         charactersEnded: false
     }
 
+    itemRefs = [];
+
     marvelService = new MarvelService();
 
     componentDidMount() {
         this.updateCharacters();
+        window.addEventListener('scroll', this.onScrollDown);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScrollDown);
+    }
+
+    onScrollDown = () => {
+        if (window.pageYOffset + document.documentElement.clientHeight >=
+            document.documentElement.scrollHeight - 1) {
+            this.updateCharacters(this.state.offset);
+        }
+    }
+
+    onItemFocus = (id) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
+
+    onCharacterSelected = (id) => {
+        this.props.onCharSelected(id)
     }
 
     updateCharacters = (offset) => {
@@ -28,6 +52,10 @@ class CharList extends Component {
         this.marvelService.getAllCharacters(offset)
             .then(this.onCharactersLoaded)
             .catch(this.onError);
+    }
+
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
     }
 
     onItemsLoading = () => this.setState({ itemsLoading: true });
@@ -53,14 +81,30 @@ class CharList extends Component {
     }
 
     renderCharacters(characters) {
-        const listCharacters = characters.map(character => {
+        const listCharacters = characters.map((character, i) => {
             const imageStyle = character.thunbnail.indexOf("image_not_available.jpg") > -1 ?
                 { objectFit: "fill" } : null;
 
+            let itemClassName = "char__item";
+            if (this.state.activeCharacter === character.id) {
+                itemClassName += " char__item_selected";
+            }
+
             return (
-                <li className="char__item"
+                <li className={itemClassName}
                     key={character.id}
-                    onClick={() => this.props.onCharSelected(character.id)}>
+                    tabIndex={0}
+                    onClick={() => {
+                        this.onCharacterSelected(character.id);
+                        this.onItemFocus(i);
+                    }}
+                    ref={this.setRef}
+                    onKeyPress={(e) => {
+                        if (e.key === ' ' || e.key === "Enter") {
+                            this.onCharacterSelected(character.id)
+                            this.onItemFocus(i);
+                        }
+                    }}>
                     <img src={character.thunbnail} alt={character.name}
                         style={imageStyle} />
                     <div className="char__name">{character.name}</div>
